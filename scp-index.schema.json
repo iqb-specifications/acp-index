@@ -235,7 +235,7 @@
         "metadata": {
           "$ref": "#/$defs/metadata"
         },
-        "testcenterBooklets": {
+        "testcenterBooklet": {
           "description": "If part of TBA, this ids refer to the language specific XML definition used to run the instrument in IQB-Testcenter.",
           "type": "array",
           "items": {
@@ -283,6 +283,15 @@
             "additionalProperties": false
           }
         },
+        "administrationMode": {
+          "type": "string",
+          "enum": [
+            "TEST_BY_TEST_TAKER",
+            "TEST_BY_PROCTOR",
+            "STIMULUS_FOR_TEST_TAKER"
+          ],
+          "default": "TEST_BY_TEST_TAKER"
+        },
         "handOutsForTestTaker": {
           "description": "All documents must be presented to the test taker (online or print-out).",
           "type": "array",
@@ -295,41 +304,14 @@
                 "minimum": 0,
                 "default": 0
               },
-              "asPrintOut": {
-                "type": "boolean",
-                "default": false
-              },
-              "file": {
-                "description": "All language variants of the same hand-out",
-                "type": "array",
-                "items": {
-                  "$ref": "#/$defs/languageTaggedObjectRef"
-                },
-                "minItems": 1
-              }
-            },
-            "required": [
-              "file"
-            ],
-            "additionalProperties": false
-          },
-          "minItems": 1
-        },
-        "handOutsForTestProctor": {
-          "description": "All documents must be presented to the test proctor (online or print-out).",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "order": {
-                "description": "Default sorting is alpha-numeric.",
-                "type": "integer",
-                "minimum": 0,
-                "default": 0
-              },
-              "asPrintOut": {
-                "type": "boolean",
-                "default": false
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "PRINT_SHOW",
+                  "PRINT_WRITE_DRAW",
+                  "ON_SCREEN"
+                ],
+                "default": "PRINT"
               },
               "file": {
                 "description": "All language variants of the same hand-out",
@@ -350,9 +332,18 @@
       },
       "required": [
         "id",
-        "name"
+        "name",
+        "testcenterBooklet"
       ],
       "additionalProperties": false
+    },
+    "itemValueType": {
+      "type": "string",
+      "enum": [
+        "FULL_CREDIT",
+        "NO_CREDIT",
+        "MISSING"
+      ]
     },
     "item": {
       "type": "object",
@@ -371,7 +362,7 @@
             "type": "object",
             "properties": {
               "moduleId": {
-                "description": "Refers to the module used by an instrument of the surveyPart",
+                "description": "Refers to the module used by an instrument of the surveyPart. If no moduleId is given, all modules will searched for the unit.",
                 "type": "string"
               },
               "unitId": {
@@ -385,26 +376,25 @@
               "sourceVariable": {
                 "description": "Refers to the variable providing its score as item value",
                 "type": "string"
-              },
-              "fullCreditValue": {
-                "description": "Score of source variable representing full credit",
-                "type": "integer",
-                "default": 1
-              },
-              "noCreditValue": {
-                "description": "Score of source variable representing no credit",
-                "type": "integer",
-                "default": 0
               }
             },
             "required": [
-              "moduleId",
               "unitId",
               "sourceVariable"
             ],
             "additionalProperties": false
           },
           "minItems": 1
+        },
+        "fullCreditValue": {
+          "description": "Score of source variable representing full credit",
+          "type": "integer",
+          "default": 1
+        },
+        "noCreditValue": {
+          "description": "Score of source variable representing no credit",
+          "type": "integer",
+          "default": 0
         }
       },
       "required": [
@@ -432,20 +422,20 @@
       "description": "Some parameters for coding and analysis in general",
       "type": "object",
       "properties": {
-        "itemValueFullCredit": {
-          "description": "Value of item representing full credit",
-          "type": "integer",
-          "default": 1
-        },
-        "itemValueNoCredit": {
-          "description": "Value of item representing no credit",
-          "type": "integer",
-          "default": 0
-        },
-        "itemValueMissing": {
-          "description": "Value of item representing missing",
-          "type": "integer",
-          "default": -99
+        "itemValues": {
+          "description": "Mapping logical item values to numeric values. Standards are 1-FULL_CREDIT, 0-NO_CREDIT, -99-MISSING.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/$defs/itemValueType"
+              },
+              "value": {
+                "type": "integer"
+              }
+            }
+          }
         },
         "statusMapping": {
           "description": "Rules how to translate response status into item value",
@@ -453,13 +443,8 @@
           "items": {
             "type": "object",
             "properties": {
-              "itemValue": {
-                "type": "string",
-                "enum": [
-                  "FULL_CREDIT",
-                  "NO_CREDIT",
-                  "MISSING"
-                ]
+              "itemValueType": {
+                "$ref": "#/$defs/itemValueType"
               },
               "status": {
                 "type": "array",
@@ -485,7 +470,7 @@
               }
             },
             "required": [
-              "itemValue",
+              "itemValueType",
               "status"
             ],
             "additionalProperties": false
@@ -534,22 +519,7 @@
           "description": "List of all items providing it's value to this specific scale",
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "itemId": {
-                "description": "This parameter refers to one entry of the surveyPart item list.",
-                "type": "string"
-              },
-              "weight": {
-                "description": "Modifies the item value before processing - works as a multiplier.",
-                "type": "number",
-                "default": 1
-              }
-            },
-            "required": [
-              "itemId"
-            ],
-            "additionalProperties": false
+            "type": "string"
           },
           "minItems": 1
         }
@@ -669,13 +639,19 @@
                       "default": "SAME_AS"
                     }
                   },
-                  "required": ["value","url"],
+                  "required": [
+                    "value",
+                    "url"
+                  ],
                   "additionalProperties": false
                 },
                 "minItems": 1
               }
             },
-            "required": ["values","url"],
+            "required": [
+              "values",
+              "url"
+            ],
             "additionalProperties": false
           }
         }
@@ -741,6 +717,47 @@
           "items": {
             "$ref": "#/$defs/derivedScale"
           }
+        },
+        "supportingDocuments": {
+          "description": "Additional documents supporting the assessment",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "contentType": {
+                "type": "string",
+                "enum": [
+                  "CODING_INSTRUCTIONS",
+                  "STUDY_BACKGROUND"
+                ]
+              },
+              "targeting": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "PROCTOR",
+                    "TEST_TAKER",
+                    "TEACHER",
+                    "TEST_ADMINISTRATION",
+                    "GOVERNANCE",
+                    "CODER"
+                  ]
+                },
+                "minItems": 1
+              },
+              "file": {
+                "$ref": "#/$defs/languageTaggedObjectRef"
+              }
+            },
+            "required": [
+              "file",
+              "targeting",
+              "contentType"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
         }
       },
       "required": [
