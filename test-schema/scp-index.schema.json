@@ -361,7 +361,7 @@
           "description": "Identifier used in all other definitions of this document",
           "type": "string"
         },
-        "name": {
+        "label": {
           "$ref": "#/$defs/languageTaggedText"
         },
         "sources": {
@@ -370,10 +370,6 @@
           "items": {
             "type": "object",
             "properties": {
-              "moduleId": {
-                "description": "Refers to the module used by an instrument of the surveyPart",
-                "type": "string"
-              },
               "unitId": {
                 "description": "Refers to the unit data (UI definition, coding scheme, metadata etc.)",
                 "type": "string"
@@ -398,7 +394,6 @@
               }
             },
             "required": [
-              "moduleId",
               "unitId",
               "sourceVariable"
             ],
@@ -409,7 +404,6 @@
       },
       "required": [
         "id",
-        "name",
         "sources"
       ],
       "additionalProperties": false
@@ -596,11 +590,11 @@
                   "MIN"
                 ]
               },
-              "parameters": {
+              "methodParameters": {
                 "type": "array",
                 "description": "Depending on the method, additional parameter(s) is needed.",
                 "items": {
-                  "type": "string"
+                  "type": "number"
                 },
                 "minItems": 1
               },
@@ -660,7 +654,7 @@
                     "url": {
                       "type": "string"
                     },
-                    "relationShip": {
+                    "relationship": {
                       "type": "string",
                       "enum": [
                         "SAME_AS",
