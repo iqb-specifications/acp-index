@@ -1,12 +1,12 @@
 {
-  "$id": "scp-index@0.2",
+  "$id": "acp-index@0.3",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Survey Content Package Index",
-  "description": "Specification for survey content package index.",
+  "title": "Assessment Content Package Index",
+  "description": "Specification for assessment content package index.",
   "type": "object",
   "properties": {
     "packageId": {
-      "description": "Identifier for the survey content package",
+      "description": "Identifier for the assessment content package",
       "type": "string"
     },
     "version": {
@@ -50,11 +50,11 @@
     "codingParameters": {
       "$ref": "#/$defs/codingParameters"
     },
-    "surveyParts": {
+    "assessmentParts": {
       "description": "Groups of instruments, administrated the same way or at the same time.",
       "type": "array",
       "items": {
-        "$ref": "#/$defs/surveyPart"
+        "$ref": "#/$defs/assessmentPart"
       },
       "minItems": 1
     }
@@ -257,7 +257,7 @@
                   "type": "object",
                   "properties": {
                     "moduleId": {
-                      "description": "Reference to the module id at surveyPart level",
+                      "description": "Reference to the module id at assessmentPart level",
                       "type": "string"
                     },
                     "order": {
@@ -356,13 +356,13 @@
           "$ref": "#/$defs/languageTaggedText"
         },
         "sources": {
-          "description": "This item will get its value from various sources throughout the survey",
+          "description": "This item will get its value from various sources throughout the assessment",
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
               "moduleId": {
-                "description": "Refers to the module used by an instrument of the surveyPart. If no moduleId is given, all modules will searched for the unit.",
+                "description": "Refers to the module used by an instrument of the assessmentPart. If no moduleId is given, all modules will searched for the unit.",
                 "type": "string"
               },
               "unitId": {
@@ -488,7 +488,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "description": "Identifier referred by other scales and survey output.",
+          "description": "Identifier referred by other scales and assessment output.",
           "type": "string"
         },
         "name": {
@@ -536,7 +536,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "description": "Identifier referred by other scales and survey output.",
+          "description": "Identifier referred by other scales and assessment output.",
           "type": "string"
         },
         "name": {
@@ -664,12 +664,12 @@
       ],
       "additionalProperties": false
     },
-    "surveyPart": {
+    "assessmentPart": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Identifier for the survey part"
+          "description": "Identifier for the assessment part"
         },
         "name": {
           "$ref": "#/$defs/languageTaggedText"
@@ -681,7 +681,7 @@
           "$ref": "#/$defs/metadata"
         },
         "bookletModules": {
-          "description": "All modules used in this surveyPart by instruments",
+          "description": "All modules used in this assessmentPart by instruments",
           "type": "array",
           "items": {
             "$ref": "#/$defs/bookletModule"
@@ -689,7 +689,7 @@
           "minItems": 1
         },
         "instruments": {
-          "description": "All instruments for the survey part, online or to hand out",
+          "description": "All instruments for the assessment part, online or to hand out",
           "type": "array",
           "items": {
             "$ref": "#/$defs/instrument"

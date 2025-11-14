@@ -1,21 +1,21 @@
 {
-  "name": "@iqbspecs/scp-index",
+  "name": "@iqbspecs/acp-index",
   "author": "IQB - Institut zur Qualitätsentwicklung im Bildungswesen",
   "license": "CC0-1.0",
-  "description": "Specification for survey content package index.",
+  "description": "Specification for assessment content package index.",
   "scripts": {
-    "validate-schema": "test-schema test scp-index.schema.json",
+    "validate-schema": "test-schema test acp-index.schema.json",
     "async_generate": "ag ./make_doc/asyncapi.yaml @asyncapi/html-template --param config=make_doc/asyncapi.config.json -o ./public --force-write",
     "generate_docs": "npm run async_generate && cat make_doc/add.css >> ./public/css/global.min.css"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iqb-specifications/scp-index.git"
+    "url": "git+https://github.com/iqb-specifications/acp-index.git"
   },
   "bugs": {
-    "url": "https://github.com/iqb-specifications/scp-index/issues"
+    "url": "https://github.com/iqb-specifications/acp-index/issues"
   },
-  "homepage": "https://github.com/iqb-specifications/scp-index#readme",
+  "homepage": "https://github.com/iqb-specifications/acp-index#readme",
   "devDependencies": {
     "@iqbspecs/validate-json": "^0.4.0",
     "@asyncapi/generator": "2.4.1",
