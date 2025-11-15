@@ -34,7 +34,7 @@
       ]
     },
     "status": {
-      "description": "Describes the progress of development and visibility issues. During development, version suffixes may be used like 'beta', 'rc' etc.",
+      "description": "Describes the progress of development and visibility issues.",
       "type": "string",
       "enum": [
         "IN_DEVELOPMENT",
@@ -149,15 +149,10 @@
       ],
       "additionalProperties": false
     },
-    "unitInModule": {
+    "unit": {
       "type": "object",
       "properties": {
         "id": {
-          "description": "Identifier for the instrument",
-          "type": "string"
-        },
-        "alias": {
-          "description": "Identifier for responses",
           "type": "string"
         },
         "name": {
@@ -166,11 +161,35 @@
         "description": {
           "type": "string"
         },
-        "order": {
+        "items": {
           "description": "Default sorting is alpha-numeric.",
-          "type": "integer",
-          "minimum": 0,
-          "default": 0
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "useUnitAliasAsPrefix": {
+                "description": "If true, the unique item identifier will be composed of the unit alias and the item id. If false, the item id has no prefix.",
+                "type": "boolean",
+                "default": true
+              },
+              "name": {
+                "$ref": "#/$defs/languageTaggedText"
+              },
+              "sourceVariable": {
+                "description": "Refers to the variable providing its score as item value",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "sourceVariable"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
         },
         "dependencies": {
           "description": "All digital objects being part of the unit",
@@ -210,7 +229,27 @@
           "description": "All units being part of the module",
           "type": "array",
           "items": {
-            "$ref": "#/$defs/unitInModule"
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "Identifier referring to unit list",
+                "type": "string"
+              },
+              "alias": {
+                "description": "Prefix for full item identifier. If not given, the id will be used instead.",
+                "type": "string"
+              },
+              "order": {
+                "description": "Default sorting is alpha-numeric.",
+                "type": "integer",
+                "minimum": 0,
+                "default": 0
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
           },
           "minItems": 1
         }
@@ -345,65 +384,6 @@
         "MISSING"
       ]
     },
-    "item": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "description": "Identifier used in all other definitions of this document",
-          "type": "string"
-        },
-        "name": {
-          "$ref": "#/$defs/languageTaggedText"
-        },
-        "sources": {
-          "description": "This item will get its value from various sources throughout the assessment",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "moduleId": {
-                "description": "Refers to the module used by an instrument of the assessmentPart. If no moduleId is given, all modules will searched for the unit.",
-                "type": "string"
-              },
-              "unitId": {
-                "description": "Refers to the unit data (UI definition, coding scheme, metadata etc.)",
-                "type": "string"
-              },
-              "unitAlias": {
-                "description": "Refers to the unit id used in response data",
-                "type": "string"
-              },
-              "sourceVariable": {
-                "description": "Refers to the variable providing its score as item value",
-                "type": "string"
-              }
-            },
-            "required": [
-              "unitId",
-              "sourceVariable"
-            ],
-            "additionalProperties": false
-          },
-          "minItems": 1
-        },
-        "fullCreditValue": {
-          "description": "Score of source variable representing full credit",
-          "type": "integer",
-          "default": 1
-        },
-        "noCreditValue": {
-          "description": "Score of source variable representing no credit",
-          "type": "integer",
-          "default": 0
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "sources"
-      ],
-      "additionalProperties": false
-    },
     "methodParametersRatio": {
       "description": "Parameters for the processing method RATIO.",
       "type": "object",
@@ -455,15 +435,8 @@
                     "NOT_REACHED",
                     "DISPLAYED",
                     "VALUE_CHANGED",
-                    "DERIVE_ERROR",
-                    "NO_CODING",
                     "INVALID",
-                    "CODING_INCOMPLETE",
-                    "CODING_ERROR",
-                    "PARTLY_DISPLAYED",
-                    "DERIVE_PENDING",
-                    "INTENDED_INCOMPLETE",
-                    "CODE_SELECTION_PENDING"
+                    "CODING_ERROR"
                   ]
                 },
                 "minItems": 1
@@ -475,13 +448,40 @@
             ],
             "additionalProperties": false
           }
-        },
-        "minItemsPercent": {
-          "description": "Minimum number of items in responses for a scale to be reported (percent)",
-          "type": "number",
-          "default": 0
         }
       },
+      "additionalProperties": false
+    },
+    "itemInScale": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Identifier referring to unique identifier of item in unit list.",
+          "type": "string"
+        },
+        "parameters": {
+          "type": "array",
+          "description": "List of item values relevant for processing",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "enum": [
+                  "LOGIT",
+                  "WEIGHT"
+                ]
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id"
+      ],
       "additionalProperties": false
     },
     "baseScale": {
@@ -504,11 +504,12 @@
             "SUM",
             "RATIO",
             "MEAN",
-            "MEDIAN"
+            "MEDIAN",
+            "WLE"
           ]
         },
         "methodParameters": {
-          "description": "Depending on the method, different parameters specify the processing.",
+          "description": "Depending on the method, different parameters may specify the processing.",
           "oneOf": [
             {
               "$ref": "#/$defs/methodParametersRatio"
@@ -516,12 +517,17 @@
           ]
         },
         "items": {
-          "description": "List of all items providing it's value to this specific scale",
+          "description": "List of all items providing it's value to this scale",
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/itemInScale"
           },
           "minItems": 1
+        },
+        "minItemNumber": {
+          "description": "Minimum number of items in responses for this scale to be reported; set '0' for unlimited",
+          "type": "number",
+          "default": 0
         }
       },
       "required": [
@@ -529,6 +535,56 @@
         "name",
         "method",
         "items"
+      ],
+      "additionalProperties": false
+    },
+    "aggregatedScale": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Identifier referred by other scales and assessment output.",
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/$defs/languageTaggedText"
+        },
+        "description": {
+          "$ref": "#/$defs/languageTaggedText"
+        },
+        "method": {
+          "description": "Way how to process the item values.",
+          "type": "string",
+          "enum": [
+            "SUM",
+            "MEAN"
+          ],
+          "default": "SUM"
+        },
+        "sources": {
+          "description": "List of all scales providing it's value to this scale",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "Id of the scale providing the value for this aggregation.",
+                "type": "string"
+              },
+              "weight": {
+                "description": "Factor to adapt the scale value",
+                "type": "number",
+                "default": 1
+              }
+            },
+            "required": ["id"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "sources"
       ],
       "additionalProperties": false
     },
@@ -680,6 +736,14 @@
         "metadata": {
           "$ref": "#/$defs/metadata"
         },
+        "units": {
+          "description": "Definition of all units and items used by modules.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unit"
+          },
+          "minItems": 1
+        },
         "bookletModules": {
           "description": "All modules used in this assessmentPart by instruments",
           "type": "array",
@@ -696,14 +760,6 @@
           },
           "minItems": 1
         },
-        "items": {
-          "description": "Definition of all items from all modules.",
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/item"
-          },
-          "minItems": 1
-        },
         "baseScales": {
           "description": "Scales based directly on item values, providing one value per test taker",
           "type": "array",
@@ -716,6 +772,13 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/derivedScale"
+          }
+        },
+        "aggregatedScales": {
+          "description": "Scales based on values from other scales, providing one value per test taker",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aggregatedScale"
           }
         },
         "supportingDocuments": {
@@ -763,8 +826,9 @@
       "required": [
         "id",
         "name",
+        "bookletModules",
         "instruments",
-        "items"
+        "units"
       ],
       "additionalProperties": false
     },
