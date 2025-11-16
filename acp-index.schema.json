@@ -1,5 +1,5 @@
 {
-  "$id": "acp-index@0.3",
+  "$id": "acp-index@0.4",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Assessment Content Package Index",
   "description": "Specification for assessment content package index.",
@@ -384,8 +384,8 @@
         "MISSING"
       ]
     },
-    "methodParametersRatio": {
-      "description": "Parameters for the processing method RATIO.",
+    "methodParametersScoreRatio": {
+      "description": "Parameters for the processing method SCORE_RATIO.",
       "type": "object",
       "properties": {
         "maxValue": {
@@ -395,6 +395,20 @@
       },
       "required": [
         "maxValue"
+      ],
+      "additionalProperties": false
+    },
+    "methodParametersCodeCount": {
+      "description": "Parameters for the processing method CODE_COUNT.",
+      "type": "object",
+      "properties": {
+        "codeValue": {
+          "description": "Value of code to be counted",
+          "type": "number"
+        }
+      },
+      "required": [
+        "codeValue"
       ],
       "additionalProperties": false
     },
@@ -468,8 +482,10 @@
               "key": {
                 "type": "string",
                 "enum": [
-                  "LOGIT",
-                  "WEIGHT"
+                  "LOGIT_FULL_CREDIT",
+                  "LOGIT_PARTIAL_CREDIT_1",
+                  "LOGIT_PARTIAL_CREDIT_2",
+                  "LOGIT_PARTIAL_CREDIT_3"
                 ]
               },
               "value": {
@@ -477,6 +493,10 @@
               }
             }
           }
+        },
+        "weight": {
+          "type": "number",
+          "default": 1
         }
       },
       "required": [
@@ -501,18 +521,22 @@
           "description": "Way how to process the item values.",
           "type": "string",
           "enum": [
-            "SUM",
-            "RATIO",
-            "MEAN",
-            "MEDIAN",
-            "WLE"
+            "SCORE_SUM",
+            "SCORE_RATIO",
+            "SCORE_MEAN",
+            "SCORE_MEDIAN",
+            "SCORE_WLE",
+            "CODE_COUNT"
           ]
         },
         "methodParameters": {
           "description": "Depending on the method, different parameters may specify the processing.",
           "oneOf": [
             {
-              "$ref": "#/$defs/methodParametersRatio"
+              "$ref": "#/$defs/methodParametersScoreRatio"
+            },
+            {
+              "$ref": "#/$defs/methodParametersCodeCount"
             }
           ]
         },
