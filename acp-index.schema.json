@@ -161,6 +161,13 @@
         "description": {
           "type": "string"
         },
+        "lang": {
+          "description": "ISO-language code",
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z]{2}$",
+          "default": "de"
+        },
         "items": {
           "description": "Default sorting is alpha-numeric.",
           "type": "array",
@@ -223,7 +230,8 @@
           "description": "ISO-language code",
           "type": "string",
           "minLength": 1,
-          "pattern": "^[a-z]{2}$"
+          "pattern": "^[a-z]{2}$",
+          "default": "de"
         },
         "units": {
           "description": "All units being part of the module",
@@ -256,7 +264,6 @@
       },
       "required": [
         "id",
-        "lang",
         "units"
       ],
       "additionalProperties": false
@@ -284,7 +291,8 @@
                 "type": "string",
                 "minLength": 1,
                 "description": "ISO-language code",
-                "pattern": "^[a-z]{2}$"
+                "pattern": "^[a-z]{2}$",
+                "default": "de"
               },
               "definitionId": {
                 "description": "Id/path to the booklet XML to run this instrument",
@@ -315,7 +323,6 @@
               }
             },
             "required": [
-              "lang",
               "definitionId",
               "modules"
             ],
@@ -448,7 +455,6 @@
                     "UNSET",
                     "NOT_REACHED",
                     "DISPLAYED",
-                    "VALUE_CHANGED",
                     "INVALID",
                     "CODING_ERROR"
                   ]
@@ -525,7 +531,7 @@
             "SCORE_RATIO",
             "SCORE_MEAN",
             "SCORE_MEDIAN",
-            "SCORE_WLE",
+            "WLE",
             "CODE_COUNT"
           ]
         },
@@ -603,7 +609,7 @@
             "required": ["id"],
             "additionalProperties": false
           },
-          "minItems": 1
+          "minItems": 2
         }
       },
       "required": [
@@ -805,7 +811,7 @@
             "$ref": "#/$defs/aggregatedScale"
           }
         },
-        "supportingDocuments": {
+        "additionalDocuments": {
           "description": "Additional documents supporting the assessment",
           "type": "array",
           "items": {
