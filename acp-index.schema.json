@@ -133,10 +133,10 @@
           "description": "Describes the function of the dependency.",
           "type": "string",
           "enum": [
-            "UNIT_XML",
-            "CODING_SCHEME",
-            "METADATA",
-            "UI_DEFINITION",
+            "UNIT_INDEX",
+            "UNIT_CODING_SCHEME",
+            "UNIT_METADATA",
+            "UNIT_UI_DEFINITION",
             "PLAYER",
             "PLAYER_DEPENDENCY",
             "WIDGET"
