@@ -1,5 +1,5 @@
 {
-  "$id": "acp-index@0.4",
+  "$id": "acp-index@0.5",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Assessment Content Package Index",
   "description": "Specification for assessment content package index.",
@@ -121,97 +121,6 @@
         "additionalProperties": false
       },
       "minItems": 1
-    },
-    "unitDependency": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "description": "Id/path to find the digital object",
-          "type": "string"
-        },
-        "type": {
-          "description": "Describes the function of the dependency.",
-          "type": "string",
-          "enum": [
-            "UNIT_INDEX",
-            "UNIT_CODING_SCHEME",
-            "UNIT_METADATA",
-            "UNIT_UI_DEFINITION",
-            "PLAYER",
-            "PLAYER_DEPENDENCY",
-            "WIDGET"
-          ]
-        }
-      },
-      "required": [
-        "id",
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    "unit": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "lang": {
-          "description": "ISO-language code",
-          "type": "string",
-          "minLength": 1,
-          "pattern": "^[a-z]{2}$",
-          "default": "de"
-        },
-        "items": {
-          "description": "Default sorting is alpha-numeric.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "useUnitAliasAsPrefix": {
-                "description": "If true, the unique item identifier will be composed of the unit alias and the item id. If false, the item id has no prefix.",
-                "type": "boolean",
-                "default": true
-              },
-              "name": {
-                "$ref": "#/$defs/languageTaggedText"
-              },
-              "sourceVariable": {
-                "description": "Refers to the variable providing its score as item value",
-                "type": "string"
-              }
-            },
-            "required": [
-              "id",
-              "sourceVariable"
-            ],
-            "additionalProperties": false
-          },
-          "minItems": 1
-        },
-        "dependencies": {
-          "description": "All digital objects being part of the unit",
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/unitDependency"
-          },
-          "minItems": 1
-        }
-      },
-      "required": [
-        "id",
-        "dependencies"
-      ],
-      "additionalProperties": false
     },
     "bookletModule": {
       "type": "object",
@@ -770,8 +679,8 @@
           "description": "Definition of all units and items used by modules.",
           "type": "array",
           "items": {
-            "$ref": "#/$defs/unit"
-          },
+            "$ref": "https://w3id.org/iqb/spec/acp-unit/0.5"
+           },
           "minItems": 1
         },
         "bookletModules": {
