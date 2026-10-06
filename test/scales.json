@@ -1,0 +1,240 @@
+{
+  "packageId": "IQB.DEMO.SCALES",
+  "version": "1.0.0",
+  "name": [
+    {
+      "lang": "de",
+      "value": "Demo-Paket Skalen"
+    }
+  ],
+  "description": [
+    {
+      "lang": "de",
+      "value": "Beispiel für die Definition von Basis- und abgeleiteten Skalen"
+    }
+  ],
+  "maintainerName": "IQB - Institut zur Qualitätsentwicklung im Bildungswesen",
+  "maintainerUrl": "https://www.iqb.hu-berlin.de/tba",
+  "status": "IN_DEVELOPMENT",
+  "assessmentParts": [
+    {
+      "id": "ma",
+      "name": [
+        {
+          "lang": "de",
+          "value": "Mathematik"
+        }
+      ],
+      "units": [
+        {
+          "id": "M355201",
+          "name": "Eine lustige Geschichte",
+          "lang": "de",
+          "items": [
+            {
+              "id": "01",
+              "sourceVariable": "item01"
+            },
+            {
+              "id": "02",
+              "sourceVariable": "item02"
+            }
+          ],
+          "dependencies": [
+            {
+              "id": "units/M355201.xml",
+              "type": "UNIT_INDEX"
+            },
+            {
+              "id": "units/M355201.vocs",
+              "type": "UNIT_CODING_SCHEME"
+            },
+            {
+              "id": "player/iqb-player-aspect-2.10.0.html",
+              "type": "PLAYER"
+            }
+          ]
+        },
+        {
+          "id": "M354301",
+          "name": "Karl und Rosa",
+          "lang": "de",
+          "items": [
+            {
+              "id": "01",
+              "sourceVariable": "item01"
+            },
+            {
+              "id": "02",
+              "sourceVariable": "item02"
+            }
+          ],
+          "dependencies": [
+            {
+              "id": "units/M354301.xml",
+              "type": "UNIT_INDEX"
+            },
+            {
+              "id": "units/M354301.vocs",
+              "type": "UNIT_CODING_SCHEME"
+            },
+            {
+              "id": "player/iqb-player-aspect-2.10.0.html",
+              "type": "PLAYER"
+            }
+          ]
+        }
+      ],
+      "bookletModules": [
+        {
+          "id": "MB",
+          "name": "Mathematik Basismodul",
+          "lang": "de",
+          "units": [
+            {
+              "id": "M355201",
+              "order": 1
+            },
+            {
+              "id": "M354301",
+              "order": 2
+            }
+          ]
+        }
+      ],
+      "instruments": [
+        {
+          "id": "ma.online",
+          "name": [
+            {
+              "lang": "de",
+              "value": "Mathematik online"
+            }
+          ],
+          "testcenterBooklet": [
+            {
+              "lang": "de",
+              "definitionId": "booklets/ma-online.xml",
+              "modules": [
+                {
+                  "moduleId": "MB"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "baseScales": [
+        {
+          "id": "ma.score-sum",
+          "name": [
+            {
+              "lang": "de",
+              "value": "Summe richtiger Lösungen"
+            }
+          ],
+          "method": "SCORE_SUM",
+          "items": [
+            {
+              "id": "M35520101"
+            },
+            {
+              "id": "M35520102"
+            },
+            {
+              "id": "M35430101"
+            },
+            {
+              "id": "M35430102",
+              "weight": 2
+            }
+          ],
+          "minItemNumber": 3
+        },
+        {
+          "id": "ma.score-ratio",
+          "name": [
+            {
+              "lang": "de",
+              "value": "Anteil richtiger Lösungen"
+            }
+          ],
+          "method": "SCORE_RATIO",
+          "methodParameters": {
+            "maxValue": 4
+          },
+          "items": [
+            {
+              "id": "M35520101"
+            },
+            {
+              "id": "M35520102"
+            },
+            {
+              "id": "M35430101"
+            },
+            {
+              "id": "M35430102"
+            }
+          ]
+        }
+      ],
+      "derivedScales": [
+        {
+          "id": "ma.level",
+          "name": [
+            {
+              "lang": "de",
+              "value": "Leistungsstufe"
+            }
+          ],
+          "method": "MAP",
+          "sources": [
+            "ma.score-ratio"
+          ],
+          "mappings": [
+            {
+              "method": "MIN",
+              "parameters": [
+                "0.75"
+              ],
+              "newValue": {
+                "value": 3,
+                "label": [
+                  {
+                    "lang": "de",
+                    "value": "hoch"
+                  }
+                ]
+              }
+            },
+            {
+              "method": "MIN",
+              "parameters": [
+                "0.5"
+              ],
+              "newValue": {
+                "value": 2,
+                "label": [
+                  {
+                    "lang": "de",
+                    "value": "mittel"
+                  }
+                ]
+              }
+            }
+          ],
+          "mappingsElse": {
+            "value": 1,
+            "label": [
+              {
+                "lang": "de",
+                "value": "niedrig"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
